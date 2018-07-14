@@ -11,8 +11,8 @@ func (t *Task) complete() {
 }
 
 type TaskRepository interface {
-	Get(int) (*Task, error)
-	All() ([]*Task, error)
-	Save(*Task) error
+	Get(int) (Task, error)
+	All() ([]Task, error)
+	Save(Task) error
 	NextID() int
 }

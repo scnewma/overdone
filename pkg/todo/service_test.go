@@ -7,7 +7,7 @@ import (
 	"github.com/scnewma/todo/pkg/todo"
 )
 
-func fixture() *todo.TaskService {
+func fixture() todo.TaskService {
 	inMemRepository := inmem.NewRepository()
 
 	return todo.NewService(inMemRepository)
