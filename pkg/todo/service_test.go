@@ -3,7 +3,7 @@ package todo_test
 import (
 	"testing"
 
-	"github.com/scnewma/todo/pkg/internal/inmem"
+	"github.com/scnewma/todo/inmem"
 	"github.com/scnewma/todo/pkg/todo"
 )
 
