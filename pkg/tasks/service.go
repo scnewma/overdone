@@ -1,4 +1,4 @@
-package todo
+package tasks
 
 import (
 	"errors"
@@ -6,19 +6,19 @@ import (
 	"github.com/scnewma/todo/pkg/utils"
 )
 
-type TaskService struct {
-	repository TaskRepository
+type Service struct {
+	repository Repository
 }
 
-func NewService(repository TaskRepository) TaskService {
-	return TaskService{repository}
+func NewService(repository Repository) Service {
+	return Service{repository}
 }
 
-func (ts TaskService) LoadAll() ([]Task, error) {
+func (ts Service) LoadAll() ([]Task, error) {
 	return ts.repository.All()
 }
 
-func (ts TaskService) LoadByID(id int) (Task, error) {
+func (ts Service) LoadByID(id int) (Task, error) {
 	task, err := ts.repository.Get(id)
 	if err != nil {
 		return Task{}, errors.New("failed to retrieve task")
@@ -26,7 +26,7 @@ func (ts TaskService) LoadByID(id int) (Task, error) {
 	return task, nil
 }
 
-func (ts TaskService) Create(content string) (int, error) {
+func (ts Service) Create(content string) (int, error) {
 	if utils.IsBlank(content) {
 		return -1, errors.New("content must be provided to create a task")
 	}
@@ -42,7 +42,7 @@ func (ts TaskService) Create(content string) (int, error) {
 	return task.ID, nil
 }
 
-func (ts TaskService) MarkComplete(id int) error {
+func (ts Service) MarkComplete(id int) error {
 	task, err := ts.repository.Get(id)
 	if err != nil {
 		return errors.New("could not retrieve task")

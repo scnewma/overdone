@@ -1,16 +1,16 @@
-package todo_test
+package tasks_test
 
 import (
 	"testing"
 
 	"github.com/scnewma/todo/inmem"
-	"github.com/scnewma/todo/pkg/todo"
+	"github.com/scnewma/todo/pkg/tasks"
 )
 
-func fixture() todo.TaskService {
+func fixture() tasks.Service {
 	inMemRepository := inmem.NewRepository()
 
-	return todo.NewService(inMemRepository)
+	return tasks.NewService(inMemRepository)
 }
 
 func TestCreateTask(t *testing.T) {

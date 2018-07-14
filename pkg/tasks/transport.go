@@ -1,4 +1,4 @@
-package todo
+package tasks
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	kithttp "github.com/go-kit/kit/transport/http"
 )
 
-func MakeHandler(ts TaskService) http.Handler {
+func MakeHandler(ts Service) http.Handler {
 	loadTasksHandler := kithttp.NewServer(
 		makeLoadAllTasksEndpoint(ts),
 		kithttp.NopRequestDecoder,

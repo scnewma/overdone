@@ -1,4 +1,4 @@
-package todo
+package tasks
 
 type Task struct {
 	ID        int
@@ -10,7 +10,7 @@ func (t *Task) complete() {
 	t.Completed = true
 }
 
-type TaskRepository interface {
+type Repository interface {
 	Get(int) (Task, error)
 	All() ([]Task, error)
 	Save(Task) error

@@ -1,19 +1,21 @@
 package inmem
 
-import "github.com/scnewma/todo/pkg/todo"
+import (
+	"github.com/scnewma/todo/pkg/tasks"
+)
 
 type TaskRepository struct {
-	Tasks map[int]todo.Task
+	Tasks map[int]tasks.Task
 }
 
 func NewRepository() *TaskRepository {
 	return &TaskRepository{
-		Tasks: make(map[int]todo.Task),
+		Tasks: make(map[int]tasks.Task),
 	}
 }
 
-func (tr *TaskRepository) All() ([]todo.Task, error) {
-	tasks := make([]todo.Task, 0, len(tr.Tasks))
+func (tr *TaskRepository) All() ([]tasks.Task, error) {
+	tasks := make([]tasks.Task, 0, len(tr.Tasks))
 
 	for _, value := range tr.Tasks {
 		tasks = append(tasks, value)
@@ -22,11 +24,11 @@ func (tr *TaskRepository) All() ([]todo.Task, error) {
 	return tasks, nil
 }
 
-func (tr *TaskRepository) Get(id int) (todo.Task, error) {
+func (tr *TaskRepository) Get(id int) (tasks.Task, error) {
 	return tr.Tasks[id], nil
 }
 
-func (tr *TaskRepository) Save(task todo.Task) error {
+func (tr *TaskRepository) Save(task tasks.Task) error {
 	tr.Tasks[task.ID] = task
 
 	return nil

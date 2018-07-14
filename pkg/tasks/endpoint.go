@@ -1,4 +1,4 @@
-package todo
+package tasks
 
 import (
 	"context"
@@ -10,7 +10,7 @@ type tasksResponse struct {
 	Tasks []Task `json:"tasks"`
 }
 
-func makeLoadAllTasksEndpoint(ts TaskService) endpoint.Endpoint {
+func makeLoadAllTasksEndpoint(ts Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		tasks, err := ts.LoadAll()
 		if err != nil {
@@ -28,7 +28,7 @@ type createTaskResponse struct {
 	ID int `json:"id"`
 }
 
-func makeCreateTaskEndpoint(ts TaskService) endpoint.Endpoint {
+func makeCreateTaskEndpoint(ts Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(createTaskRequest)
 		id, err := ts.Create(req.Content)
@@ -43,7 +43,7 @@ type completeTaskRequest struct {
 	ID int
 }
 
-func makeCompleteTaskEndpoint(ts TaskService) endpoint.Endpoint {
+func makeCompleteTaskEndpoint(ts Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(completeTaskRequest)
 		err := ts.MarkComplete(req.ID)
@@ -58,7 +58,7 @@ type retrieveTaskRequest struct {
 	ID int
 }
 
-func makeRetrieveTaskEndpoint(ts TaskService) endpoint.Endpoint {
+func makeRetrieveTaskEndpoint(ts Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(retrieveTaskRequest)
 		task, err := ts.LoadByID(req.ID)

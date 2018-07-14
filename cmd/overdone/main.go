@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/scnewma/todo/inmem"
-	"github.com/scnewma/todo/pkg/todo"
+	"github.com/scnewma/todo/pkg/tasks"
 )
 
 const (
@@ -28,11 +28,11 @@ func main() {
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	inmem := inmem.NewRepository()
-	taskService := todo.NewService(inmem)
+	taskService := tasks.NewService(inmem)
 
 	mux := http.NewServeMux()
 
-	mux.Handle("/tasks/", todo.MakeHandler(taskService))
+	mux.Handle("/tasks/", tasks.MakeHandler(taskService))
 
 	http.Handle("/", mux)
 
