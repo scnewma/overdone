@@ -31,10 +31,17 @@ func MakeHandler(ts TaskService) http.Handler {
 		kithttp.EncodeJSONResponse,
 	)
 
+	retrieveTaskHandler := kithttp.NewServer(
+		makeRetrieveTaskEndpoint(ts),
+		decodeRetrieveTaskRequest,
+		kithttp.EncodeJSONResponse,
+	)
+
 	r := mux.NewRouter()
 
 	r.Handle("/tasks/", loadTasksHandler).Methods("GET")
 	r.Handle("/tasks/", createTaskHandler).Methods("POST")
+	r.Handle("/tasks/{id}", retrieveTaskHandler).Methods("GET")
 	r.Handle("/tasks/{id}/complete", completeTaskHandler).Methods("PUT")
 
 	return r
@@ -55,16 +62,34 @@ func decodeCreateTaskRequest(_ context.Context, r *http.Request) (interface{}, e
 }
 
 func decodeCompleteTaskRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := decodeTaskID(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return completeTaskRequest{ID: id}, nil
+}
+
+func decodeRetrieveTaskRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := decodeTaskID(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return retrieveTaskRequest{ID: id}, nil
+}
+
+func decodeTaskID(r *http.Request) (int, error) {
 	vars := mux.Vars(r)
 	idstr, ok := vars["id"]
 	if !ok {
-		return nil, errBadRoute
+		return -1, errBadRoute
 	}
 
 	id, err := strconv.Atoi(idstr)
 	if err != nil {
-		return nil, errBadRoute
+		return -1, errBadRoute
 	}
 
-	return completeTaskRequest{ID: id}, nil
+	return id, nil
 }

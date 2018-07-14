@@ -53,3 +53,18 @@ func makeCompleteTaskEndpoint(ts TaskService) endpoint.Endpoint {
 		return nil, nil
 	}
 }
+
+type retrieveTaskRequest struct {
+	ID int
+}
+
+func makeRetrieveTaskEndpoint(ts TaskService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(retrieveTaskRequest)
+		task, err := ts.LoadByID(req.ID)
+		if err != nil {
+			return nil, err
+		}
+		return task, nil
+	}
+}
