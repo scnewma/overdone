@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	tr = inmem.NewRepository()
 	ts = tasks.NewService(tr)
 
-	a = App{}
+	a = App{EnableLogging: false}
 	a.Initialize(ts)
 
 	os.Exit(m.Run())

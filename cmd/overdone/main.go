@@ -44,8 +44,9 @@ func main() {
 // App bridges the gap between the business logic and the web server by
 // listening for HTTP requests and calling the correct application service
 type App struct {
-	Router  *mux.Router
-	Service tasks.Service
+	Router        *mux.Router
+	Service       tasks.Service
+	EnableLogging bool
 }
 
 // Initialize sets up the routes for the web server
@@ -96,7 +97,9 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) initializeMiddleware() {
-	a.Router.Use(loggingMiddleware)
+	if a.EnableLogging {
+		a.Router.Use(loggingMiddleware)
+	}
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {

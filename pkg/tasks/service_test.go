@@ -17,9 +17,9 @@ func TestCreateTask(t *testing.T) {
 	s := fixture()
 
 	content := "new task"
-	id, _ := s.Create(content)
+	task, _ := s.Create(content)
 
-	task, _ := s.LoadByID(id)
+	task, _ = s.LoadByID(task.ID)
 	if task.Completed {
 		t.Error("expected new task to not be completed")
 	}
@@ -46,9 +46,9 @@ func TestLoadByID(t *testing.T) {
 	s := fixture()
 
 	content := "new task"
-	id, _ := s.Create(content)
+	task, _ := s.Create(content)
 
-	task, _ := s.LoadByID(id)
+	task, _ = s.LoadByID(task.ID)
 
 	if task.Content != content {
 		t.Errorf("expected Content to be %s but was %s", content, task.Content)
@@ -59,14 +59,14 @@ func TestCompleteTask(t *testing.T) {
 	s := fixture()
 
 	content := "new task"
-	id, _ := s.Create(content)
+	task, _ := s.Create(content)
 
-	err := s.MarkComplete(id)
+	task, err := s.MarkComplete(task.ID)
 	if err != nil {
 		t.Errorf("did not expect an error %v", err)
 	}
 
-	task, _ := s.LoadByID(id)
+	task, _ = s.LoadByID(task.ID)
 
 	if !task.Completed {
 		t.Error("expected task to be marked completed")
