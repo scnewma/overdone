@@ -13,6 +13,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/scnewma/todo/inmem"
+	httplogging "github.com/scnewma/todo/pkg/http/logging"
 	"github.com/scnewma/todo/pkg/tasks"
 	"github.com/scnewma/todo/pkg/utils"
 )
@@ -52,6 +53,7 @@ func (a *App) Initialize(ts tasks.Service) {
 	a.Service = ts
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
+	a.initializeMiddleware()
 }
 
 // Run starts the web server on the given address
@@ -91,6 +93,14 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/tasks", a.createTask).Methods("POST")
 	a.Router.HandleFunc("/tasks/{id:[0-9]+}", a.getTask).Methods("GET")
 	a.Router.HandleFunc("/tasks/{id:[0-9]+}/complete", a.completeTask).Methods("PUT")
+}
+
+func (a *App) initializeMiddleware() {
+	a.Router.Use(loggingMiddleware)
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return httplogging.NewApacheLoggingHandler(next, os.Stdout)
 }
 
 func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
