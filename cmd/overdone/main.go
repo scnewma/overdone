@@ -36,7 +36,7 @@ func main() {
 	tr := inmem.NewRepository()
 	ts := tasks.NewService(tr)
 
-	a := App{}
+	a := App{EnableLogging: true}
 	a.Initialize(ts)
 	a.Run(*httpAddr, *timeout)
 }
