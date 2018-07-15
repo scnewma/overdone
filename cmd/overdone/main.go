@@ -39,18 +39,21 @@ func main() {
 	a.Run(*httpAddr)
 }
 
+// App bridges the gap between the business logic and the web server by
+// listening for HTTP requests and calling the correct application service
 type App struct {
 	Router  *mux.Router
 	Service tasks.Service
 }
 
-// Initialize sets up the app
+// Initialize sets up the routes for the web server
 func (a *App) Initialize(ts tasks.Service) {
 	a.Service = ts
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
 }
 
+// Run starts the web server on the given address
 func (a *App) Run(addr string) {
 	errs := make(chan error, 2)
 
@@ -65,7 +68,7 @@ func (a *App) Run(addr string) {
 		errs <- fmt.Errorf("%s", <-c)
 	}()
 
-	log.Printf("terminated", <-errs)
+	log.Printf("terminated %v", <-errs)
 }
 
 func (a *App) initializeRoutes() {
