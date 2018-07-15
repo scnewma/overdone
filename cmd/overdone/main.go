@@ -1,15 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
-	"syscall"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/scnewma/todo/inmem"
@@ -27,7 +27,8 @@ func main() {
 		port = defaultPort
 	}
 
-	httpAddr := flag.String("http.addr", ":"+port, "HTTP Listen Address")
+	httpAddr := flag.String("http-addr", ":"+port, "HTTP Listen Address")
+	timeout := flag.Duration("graceful-timeout", time.Second*15, "The duration the server will wait to for existing connections to finish before shutdown")
 
 	flag.Parse()
 
@@ -36,7 +37,7 @@ func main() {
 
 	a := App{}
 	a.Initialize(ts)
-	a.Run(*httpAddr)
+	a.Run(*httpAddr, *timeout)
 }
 
 // App bridges the gap between the business logic and the web server by
@@ -54,21 +55,35 @@ func (a *App) Initialize(ts tasks.Service) {
 }
 
 // Run starts the web server on the given address
-func (a *App) Run(addr string) {
-	errs := make(chan error, 2)
+func (a *App) Run(addr string, timeout time.Duration) {
+	srv := &http.Server{
+		Addr:         addr,
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      a.Router,
+	}
 
 	go func() {
 		log.Printf("transport=http address=%s message=listening", addr)
-		errs <- http.ListenAndServe(addr, a.Router)
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
 	}()
 
-	go func() {
-		c := make(chan os.Signal)
-		signal.Notify(c, syscall.SIGINT)
-		errs <- fmt.Errorf("%s", <-c)
-	}()
+	// accept graceful shutdowns via INTERRUPT
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c // block until signal received
 
-	log.Printf("terminated %v", <-errs)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	// block up to timout period for connections to close
+	srv.Shutdown(ctx)
+
+	log.Println("shutting down")
+	os.Exit(0)
 }
 
 func (a *App) initializeRoutes() {
