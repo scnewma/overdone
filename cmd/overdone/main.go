@@ -12,10 +12,10 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/scnewma/todo/inmem"
-	httplogging "github.com/scnewma/todo/pkg/http/logging"
-	"github.com/scnewma/todo/pkg/tasks"
-	"github.com/scnewma/todo/pkg/utils"
+	"github.com/scnewma/overdone/inmem"
+	httplogging "github.com/scnewma/overdone/pkg/http/logging"
+	"github.com/scnewma/overdone/pkg/tasks"
+	"github.com/scnewma/overdone/pkg/utils"
 )
 
 const (

@@ -3,7 +3,7 @@ package inmem
 import (
 	"errors"
 
-	"github.com/scnewma/todo/pkg/tasks"
+	"github.com/scnewma/overdone/pkg/tasks"
 )
 
 type TaskRepository struct {

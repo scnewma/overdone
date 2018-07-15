@@ -3,8 +3,8 @@ package tasks_test
 import (
 	"testing"
 
-	"github.com/scnewma/todo/inmem"
-	"github.com/scnewma/todo/pkg/tasks"
+	"github.com/scnewma/overdone/inmem"
+	"github.com/scnewma/overdone/pkg/tasks"
 )
 
 func fixture() tasks.Service {

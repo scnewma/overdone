@@ -3,7 +3,7 @@ package tasks
 import (
 	"errors"
 
-	"github.com/scnewma/todo/pkg/utils"
+	"github.com/scnewma/overdone/pkg/utils"
 )
 
 // ErrNotFound is returned by any operation that is performed on a task object,
