@@ -1,6 +1,8 @@
 package inmem
 
 import (
+	"errors"
+
 	"github.com/scnewma/todo/pkg/tasks"
 )
 
@@ -25,7 +27,11 @@ func (tr *TaskRepository) All() ([]tasks.Task, error) {
 }
 
 func (tr *TaskRepository) Get(id int) (tasks.Task, error) {
-	return tr.Tasks[id], nil
+	if task, ok := tr.Tasks[id]; ok {
+		return task, nil
+	} else {
+		return tasks.Task{}, errors.New("task not found")
+	}
 }
 
 func (tr *TaskRepository) Save(task tasks.Task) error {
@@ -36,4 +42,8 @@ func (tr *TaskRepository) Save(task tasks.Task) error {
 
 func (tr *TaskRepository) NextID() int {
 	return len(tr.Tasks) + 1
+}
+
+func (tr *TaskRepository) Clear() {
+	tr.Tasks = make(map[int]tasks.Task)
 }

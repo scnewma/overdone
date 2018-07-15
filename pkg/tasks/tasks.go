@@ -1,9 +1,9 @@
 package tasks
 
 type Task struct {
-	ID        int
-	Completed bool
-	Content   string
+	ID        int    `json:"id"`
+	Completed bool   `json:"completed"`
+	Content   string `json:"content"`
 }
 
 func (t *Task) complete() {

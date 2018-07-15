@@ -6,6 +6,10 @@ import (
 	"github.com/scnewma/todo/pkg/utils"
 )
 
+// ErrNotFound is returned by any operation that is performed on a task object,
+// but that task object was not found
+var ErrNotFound = errors.New("tasks: no task found")
+
 type Service struct {
 	repository Repository
 }
@@ -21,14 +25,14 @@ func (ts Service) LoadAll() ([]Task, error) {
 func (ts Service) LoadByID(id int) (Task, error) {
 	task, err := ts.repository.Get(id)
 	if err != nil {
-		return Task{}, errors.New("failed to retrieve task")
+		return Task{}, ErrNotFound
 	}
 	return task, nil
 }
 
-func (ts Service) Create(content string) (int, error) {
+func (ts Service) Create(content string) (Task, error) {
 	if utils.IsBlank(content) {
-		return -1, errors.New("content must be provided to create a task")
+		return Task{}, errors.New("content must be provided to create a task")
 	}
 
 	task := Task{
@@ -39,21 +43,21 @@ func (ts Service) Create(content string) (int, error) {
 
 	ts.repository.Save(task)
 
-	return task.ID, nil
+	return task, nil
 }
 
-func (ts Service) MarkComplete(id int) error {
+func (ts Service) MarkComplete(id int) (Task, error) {
 	task, err := ts.repository.Get(id)
 	if err != nil {
-		return errors.New("could not retrieve task")
+		return Task{}, ErrNotFound
 	}
 
 	task.complete()
 
 	err = ts.repository.Save(task)
 	if err != nil {
-		return errors.New("failed to save task")
+		return Task{}, errors.New("failed to save task")
 	}
 
-	return nil
+	return task, nil
 }
